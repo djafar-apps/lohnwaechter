@@ -1,0 +1,6 @@
+{
+  "appId": "de.lohnwaechter.test",
+  "appName": "Lohnwächter",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
