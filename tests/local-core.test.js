@@ -1,0 +1,10 @@
+const assert=require('assert');const c=require('../www/local-core.js');
+let r=c.validateProfile({name:'Hauptjob',employer:'ESE',employmentType:'full_time'});assert(r.ok);
+assert(!c.validateProfile({name:'',employer:'',employmentType:'x'}).ok);
+assert(!c.validateContract({weeklyHours:'',annualLeaveDays:''}).ok);
+assert(c.validateContract({weeklyHours:40,annualLeaveDays:30,grossHourlyRate:''}).ok);
+assert.equal(c.parse('{bad').profiles.length,0);
+const mem={v:null,getItem(){return this.v},setItem(k,v){this.v=v}};
+const repo=c.repo(mem);let s=repo.saveProfile({name:'Job',employer:'Firma',employmentType:'part_time'},{weeklyHours:20,annualLeaveDays:24,grossHourlyRate:15});
+assert(s.ok);assert.equal(repo.load().profiles[0].contract.weeklyHours,20);assert.equal(repo.load().profiles[0].provenance,'user_confirmed');
+console.log('local-core tests PASS');
