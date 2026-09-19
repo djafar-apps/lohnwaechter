@@ -2,7 +2,7 @@
 const SCHEMA_VERSION=1, KEY='lw.localcore.v1';
 const allowedTypes=['full_time','part_time','mini_job','other'];
 function text(v,max){return String(v??'').trim().slice(0,max);}
-function num(v,min,max){const n=Number(v);return Number.isFinite(n)&&n>=min&&n<=max?n:null;}
+function num(v,min,max){if(v===null||v===undefined||String(v).trim()==='')return null;const n=Number(v);return Number.isFinite(n)&&n>=min&&n<=max?n:null;}
 function validateProfile(x){
  const errors={}; const name=text(x?.name,80), employer=text(x?.employer,120), type=text(x?.employmentType,30);
  if(!name) errors.name='required'; if(!employer) errors.employer='required'; if(!allowedTypes.includes(type)) errors.employmentType='invalid';
