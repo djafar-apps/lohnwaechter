@@ -17,7 +17,10 @@ for(const id of ['name','employer','employmentType','weeklyHours','annualLeaveDa
 assert(ui.includes('Vom Nutzer bestätigt'));assert(ui.includes('aria-live="polite"'));assert(ui.includes('local-core.js'));
 assert(ui.includes('fa-IR-u-ca-gregory'),'Persian UI must explicitly keep Gregorian calendar');
 for(const required of ['homePanel','calendarPanel','weekDays','prevWeek','nextWeek','goToday'])assert(ui.includes(required),'missing approved UI behavior '+required);
-assert(ui.includes("touchstart")&&ui.includes("touchend"),'weekly calendar swipe regression');
+assert(ui.includes('scroll-snap-type:x proximity'),'calendar rail must be native smooth horizontal scroll');
+assert(!ui.includes("addEventListener('touchend'"),'calendar rail must not spring via synthetic touch rerender');
+assert(ui.includes('env(safe-area-inset-bottom)'),'bottom navigation must clear Android system navigation');
+for(const x of ['patternPreset','three','two','fixed','continental','patternBuild','patternPreview'])assert(ui.includes(x),'missing working shift-pattern behavior '+x);
 assert(ui.includes('تقویم')&&ui.includes('خانه'),'core navigation regression');
 assert(!/value=["'](?:28|30|40)["']/.test(ui),'contract facts must not have hidden numeric defaults');
 assert(!/fetch\s*\(|XMLHttpRequest|WebSocket/.test(ui),'Gate B core UI must not depend on network');
