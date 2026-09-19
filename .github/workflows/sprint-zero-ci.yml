@@ -31,7 +31,14 @@ jobs:
         run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
       - name: Local Core tests
         run: node tests/local-core.test.js
-      - name: Lockfile integrity\n        run: |\n          npm install --package-lock-only --ignore-scripts\n          git diff --exit-code -- package-lock.json\n\n      # Fail closed against npm's documented Bulk Advisory endpoint.\n      - name: Dependency security audit (npm Bulk Advisory)\n        run: node scripts/npm-bulk-audit.js package-lock.json high
+      - name: Lockfile integrity
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          git diff --exit-code -- package-lock.json
+
+      # Fail closed against npm's documented Bulk Advisory endpoint.
+      - name: Dependency security audit (npm Bulk Advisory)
+        run: node scripts/npm-bulk-audit.js package-lock.json high
       - name: Secret scan
         run: |
           ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .
