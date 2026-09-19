@@ -1,0 +1,61 @@
+name: Sprint Zero Factory
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - 'sprint-zero/**'
+
+permissions:
+  contents: read
+
+jobs:
+  factory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Require committed lockfile
+        run: test -s package-lock.json && node -e "JSON.parse(require('fs').readFileSync('package-lock.json','utf8'))"
+      - name: Deterministic install
+        run: npm ci
+      - name: Verify exact Capacitor versions
+        run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+      - name: Secret scan
+        run: |
+          ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .
+      - name: Create Android project
+        run: npx cap add android
+      - name: Sync
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew --no-daemon assembleDebug
+      - name: Hash artifact and lockfile
+        run: |
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee APK_SHA256.txt
+          sha256sum package-lock.json | tee PACKAGE_LOCK_SHA256.txt
+      - name: Build metadata
+        run: |
+          printf 'commit=%s\nnode=%s\njava=%s\n' "$GITHUB_SHA" "$(node --version)" "$(java -version 2>&1 | head -1)" > BUILD_METADATA.txt
+      - name: SBOM
+        run: npm sbom --sbom-format cyclonedx > sbom.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sprint-zero-evidence
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            APK_SHA256.txt
+            PACKAGE_LOCK_SHA256.txt
+            package-lock.json
+            BUILD_METADATA.txt
+            sbom.cdx.json
