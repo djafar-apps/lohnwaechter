@@ -31,13 +31,7 @@ jobs:
         run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
       - name: Local Core tests
         run: node tests/local-core.test.js
-      # npm registry quick-audit endpoint may reject a valid lock/tree with HTTP 400.
-      # Keep this fail-closed: any audit transport or vulnerability failure blocks CI.
-      - name: Dependency audit
-        run: |
-          npm install --package-lock-only --ignore-scripts
-          git diff --exit-code -- package-lock.json
-          npm audit --package-lock-only --audit-level=high --registry=https://registry.npmjs.org
+      - name: Lockfile integrity\n        run: |\n          npm install --package-lock-only --ignore-scripts\n          git diff --exit-code -- package-lock.json\n\n      # Fail closed against npm's documented Bulk Advisory endpoint.\n      - name: Dependency security audit (npm Bulk Advisory)\n        run: node scripts/npm-bulk-audit.js package-lock.json high
       - name: Secret scan
         run: |
           ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .
