@@ -9,12 +9,12 @@
 </section>
 <section id="calendarPanel" class="panel"><div class="card"><h2>تقویم / Dienstplan</h2><div class="weekhead"><button class="weekbtn calPrev">‹</button><strong class="calTitle"></strong><button class="weekbtn calNext">›</button></div><div class="days calDays"></div><p class="muted calSelected"></p><button class="primary" id="calendarToday">رفتن به امروز</button></div></section>
 <section id="workPanel" class="panel"><div id="storageError" class="fatal" role="alert" hidden></div><div class="card"><h2>پروفایل کاری</h2><form id="profileForm" novalidate><input id="id" type="hidden">
-<label for="name">نام پروفایل</label><input id="name" maxlength="80" required aria-describedby="nameError"><div id="nameError" class="error"></div>
-<label for="employer">کارفرما</label><input id="employer" maxlength="120" required aria-describedby="employerError"><div id="employerError" class="error"></div>
-<label for="employmentType">نوع کار</label><select id="employmentType" required><option value="">انتخاب کنید</option><option value="full_time">تمام‌وقت</option><option value="part_time">پاره‌وقت</option><option value="mini_job">Minijob</option><option value="other">سایر</option></select><div id="employmentTypeError" class="error"></div>
-<label for="weeklyHours">ساعت هفتگی</label><input id="weeklyHours" type="number" min="0" max="168" step=".01" required><div id="weeklyHoursError" class="error"></div>
-<label for="annualLeaveDays">روز مرخصی سالانه</label><input id="annualLeaveDays" type="number" min="0" max="366" step=".01" required><div id="annualLeaveDaysError" class="error"></div>
-<label for="grossHourlyRate">دستمزد ناخالص ساعتی (€) — اختیاری</label><input id="grossHourlyRate" type="number" min="0" max="10000" step=".01"><div id="grossHourlyRateError" class="error"></div>
+<label for="name">نام پروفایل</label><input id="name" maxlength="80" required aria-describedby="nameError"><div id="nameError" class="error" aria-live="polite"></div>
+<label for="employer">کارفرما</label><input id="employer" maxlength="120" required aria-describedby="employerError"><div id="employerError" class="error" aria-live="polite"></div>
+<label for="employmentType">نوع کار</label><select id="employmentType" required><option value="">انتخاب کنید</option><option value="full_time">تمام‌وقت</option><option value="part_time">پاره‌وقت</option><option value="mini_job">Minijob</option><option value="other">سایر</option></select><div id="employmentTypeError" class="error" aria-live="polite"></div>
+<label for="weeklyHours">ساعت هفتگی</label><input id="weeklyHours" type="number" min="0" max="168" step=".01" required><div id="weeklyHoursError" class="error" aria-live="polite"></div>
+<label for="annualLeaveDays">روز مرخصی سالانه</label><input id="annualLeaveDays" type="number" min="0" max="366" step=".01" required><div id="annualLeaveDaysError" class="error" aria-live="polite"></div>
+<label for="grossHourlyRate">دستمزد ناخالص ساعتی (€) — اختیاری</label><input id="grossHourlyRate" type="number" min="0" max="10000" step=".01"><div id="grossHourlyRateError" class="error" aria-live="polite"></div>
 <button class="primary" type="submit">ذخیره</button><p id="saveStatus" class="status" role="status"></p></form></div><div class="card"><h3>پروفایل‌های ذخیره‌شده</h3><div id="profiles"></div></div></section>
 <section id="morePanel" class="panel"><div class="card"><h2>بیشتر</h2><p>نسخه بازسازی کنترل‌شده. قابلیت‌های بعدی فقط طبق Gateهای پروژه اضافه می‌شوند.</p></div></section>
 </main><nav><div class="navin"><button class="tab active" data-panel="homePanel">خانه</button><button class="tab" data-panel="calendarPanel">تقویم</button><button class="tab" data-panel="workPanel">کار</button><button class="tab" data-panel="morePanel">بیشتر</button></div></nav>
