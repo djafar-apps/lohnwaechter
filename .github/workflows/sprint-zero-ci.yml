@@ -18,15 +18,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-      - name: Require lockfile
-        run: test -f package-lock.json
+      - name: Generate deterministic lockfile
+        run: npm install --package-lock-only --ignore-scripts
       - name: Deterministic install
         run: npm ci
+      - name: Verify exact Capacitor versions
+        run: npm ls @capacitor/core@8.0.0 @capacitor/android@8.0.0 @capacitor/cli@8.0.0
       - name: Dependency audit
         run: npm audit --audit-level=high
       - name: Secret scan
@@ -41,6 +42,7 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
       - name: Hash artifact
         run: sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee APK_SHA256.txt
+          sha256sum package-lock.json | tee PACKAGE_LOCK_SHA256.txt
       - name: Build metadata
         run: |
           printf 'commit=%s\nnode=%s\njava=%s\n' "$GITHUB_SHA" "$(node --version)" "$(java -version 2>&1 | head -1)" > BUILD_METADATA.txt
@@ -52,5 +54,7 @@ jobs:
           path: |
             android/app/build/outputs/apk/debug/app-debug.apk
             APK_SHA256.txt
+            PACKAGE_LOCK_SHA256.txt
+            package-lock.json
             BUILD_METADATA.txt
             sbom.cdx.json
