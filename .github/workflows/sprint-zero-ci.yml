@@ -35,7 +35,8 @@ jobs:
         run: |
           npm install --package-lock-only --ignore-scripts
           git diff --exit-code -- package-lock.json
-          npm audit --audit-level=high
+          npm audit --audit-level=high --omit=dev
+          npm audit --audit-level=high --include=dev
       - name: Secret scan
         run: |
           ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .
