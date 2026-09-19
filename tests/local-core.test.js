@@ -3,8 +3,13 @@ let r=c.validateProfile({name:'Hauptjob',employer:'ESE',employmentType:'full_tim
 assert(!c.validateProfile({name:'',employer:'',employmentType:'x'}).ok);
 assert(!c.validateContract({weeklyHours:'',annualLeaveDays:''}).ok);
 assert(c.validateContract({weeklyHours:40,annualLeaveDays:30,grossHourlyRate:''}).ok);
-assert.equal(c.parse('{bad').profiles.length,0);
+assert.equal(c.parse(null).value.profiles.length,0);
+assert.equal(c.parse('{bad').error.code,'INVALID_JSON');
+assert.equal(c.parse(JSON.stringify({schemaVersion:99,profiles:[]})).error.code,'UNSUPPORTED_SCHEMA');
+assert.equal(c.parse(JSON.stringify({schemaVersion:1,profiles:{}})).error.code,'INVALID_DATABASE');
 const mem={v:null,getItem(){return this.v},setItem(k,v){this.v=v}};
 const repo=c.repo(mem);let s=repo.saveProfile({name:'Job',employer:'Firma',employmentType:'part_time'},{weeklyHours:20,annualLeaveDays:24,grossHourlyRate:15});
-assert(s.ok);assert.equal(repo.load().profiles[0].contract.weeklyHours,20);assert.equal(repo.load().profiles[0].provenance,'user_confirmed');
+assert(s.ok);assert.equal(repo.load().value.profiles[0].contract.weeklyHours,20);assert.equal(repo.load().value.profiles[0].provenance,'user_confirmed');
+const future=JSON.stringify({schemaVersion:2,profiles:[{id:'future'}]});mem.v=future;const blocked=repo.saveProfile({name:'X',employer:'Y',employmentType:'other'},{weeklyHours:1,annualLeaveDays:1});assert(!blocked.ok);assert.equal(blocked.error.code,'UNSUPPORTED_SCHEMA');assert.equal(mem.v,future);
+const badRaw='{broken';mem.v=badRaw;const blockedBad=repo.remove('x');assert(!blockedBad.ok);assert.equal(blockedBad.error.code,'INVALID_JSON');assert.equal(mem.v,badRaw);
 console.log('local-core tests PASS');
