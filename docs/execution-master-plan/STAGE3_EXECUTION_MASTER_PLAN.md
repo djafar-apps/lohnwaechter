@@ -80,3 +80,37 @@ Prefer EUR 0. No paid service is activated without explicit owner approval. AI w
 
 ## Current blockers after this document
 Sprint Zero remains incomplete until the CI run proves the factory. Production applicationId and release signing are intentionally deferred until needed for production signing; debug factory proof may use historical test identity.
+
+
+## Recovered product decisions — mandatory build contract (revalidated 2026-09-19)
+These are binding recovered decisions and must be checked before UI/product implementation.
+
+### Languages
+- Exactly five initial UI languages: German, Persian, Arabic, Ukrainian, English.
+- German is the default language.
+- Turkish was explicitly removed and replaced by Ukrainian.
+- Language selection is independent from country/jurisdiction/rule pack.
+
+### Shift systems and personalization
+- Dienstplan must support 1-shift, 2-shift, 3-shift and 4-shift systems.
+- Users can create/customize their own recurring shift rhythm.
+- The approved rhythm is projected onto the calendar from its explicit start date.
+- Past dates remain independently editable and must not silently shift the future rhythm.
+- Actual/Ist remains independent from planned Dienstplan.
+
+### Dienstplan photo / OCR
+- User can photograph/scan a Dienstplan.
+- OCR/extraction reads dates/shifts and proposes calendar entries.
+- Recognition is never silently committed: user confirmation is required before applying extracted shifts.
+- Raw sensitive content stays local by default; cloud/AI use follows the separate explicit opt-in/minimization rules.
+
+### Calendar and holidays
+- Official public holidays are shown in the calendar.
+- Holidays are markers only and never alter the shift-cycle rhythm.
+- Persian UI must remain Gregorian unless the user explicitly selects another calendar policy.
+- Heute uses the real local date.
+- Daily/date rail supports past and future horizontal navigation.
+- Horizontal date movement must be smooth/direct-manipulation behavior; selecting a day must not recenter or reload the rail unexpectedly.
+
+### Preservation rule
+Controlled rebuild preserves approved product behavior and UX knowledge. A technically clean replacement is not acceptable if it silently drops recovered/approved capabilities. Before implementation, relevant recovered decisions must be converted into acceptance/regression criteria.
