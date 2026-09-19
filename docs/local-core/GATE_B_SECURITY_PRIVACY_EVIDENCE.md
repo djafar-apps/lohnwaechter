@@ -27,3 +27,18 @@ No contract facts have hidden numeric defaults. Invalid or unsupported stored da
 
 ## Gate decision
 Gate B is **not PASS** until the pending evidence above is satisfied. This document does not waive any project gate.
+
+
+## CI evidence — run 56
+- Workflow run: 35458548025 — SUCCESS.
+- Head: a32d9cc706c2132a0233a3d2eb7a26238cf80690.
+- Local Core tests: PASS.
+- Lockfile integrity: PASS.
+- npm Bulk Advisory security audit: PASS.
+- Secret scan: PASS.
+- Android create/sync/debug APK build: PASS.
+- Hash metadata and SBOM generation: PASS.
+- Evidence artifact: 10589346371, digest sha256:5f784027f006ff35cae40680a018ed0ded5cde0db93f40dc7f27f2ae6326885e.
+
+## Current decision
+Automated Gate B evidence is green. Gate B remains **IMPLEMENTED — HUMAN/INDEPENDENT ACCEPTANCE PENDING** until the generated APK is exercised on a real Android device for create/invalid/edit/reload/focus behavior and an independent reviewer requirement is satisfied. Builder self-approval is prohibited.
