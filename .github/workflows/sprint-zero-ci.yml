@@ -27,7 +27,7 @@ jobs:
       - name: Deterministic install
         run: npm ci
       - name: Verify exact Capacitor versions
-        run: npm ls @capacitor/core@8.0.0 @capacitor/android@8.0.0 @capacitor/cli@8.0.0
+        run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
       - name: Dependency audit
         run: npm audit --audit-level=high
       - name: Secret scan
