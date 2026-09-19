@@ -14,15 +14,22 @@ function validateContract(x){
  return {ok:!Object.keys(errors).length,errors,value:{weeklyHours,annualLeaveDays,grossHourlyRate}};
 }
 function fresh(){return {schemaVersion:SCHEMA_VERSION,profiles:[]};}
-function parse(raw){if(!raw)return fresh();try{const d=JSON.parse(raw);if(!d||d.schemaVersion!==SCHEMA_VERSION||!Array.isArray(d.profiles))return fresh();return d;}catch(_){return fresh();}}
+function parse(raw){
+ if(raw===null||raw===undefined||raw==='')return {ok:true,value:fresh(),source:'empty'};
+ let d;try{d=JSON.parse(raw);}catch(_){return {ok:false,error:{code:'INVALID_JSON',raw}};}
+ if(!d||typeof d!=='object')return {ok:false,error:{code:'INVALID_DATABASE',raw}};
+ if(d.schemaVersion!==SCHEMA_VERSION)return {ok:false,error:{code:'UNSUPPORTED_SCHEMA',found:d.schemaVersion??null,expected:SCHEMA_VERSION,raw}};
+ if(!Array.isArray(d.profiles))return {ok:false,error:{code:'INVALID_DATABASE',raw}};
+ return {ok:true,value:d,source:'stored'};
+}
 function repo(storage){return {
  load(){return parse(storage.getItem(KEY));},
  saveProfile(profile,contract){const p=validateProfile(profile),c=validateContract(contract);if(!p.ok||!c.ok)return {ok:false,errors:{...p.errors,...c.errors}};
-  const db=this.load(), now=new Date().toISOString(), id=text(profile.id,80)||('wp-'+Date.now());
+  const loaded=this.load();if(!loaded.ok)return loaded;const db=loaded.value, now=new Date().toISOString(), id=text(profile.id,80)||('wp-'+Date.now());
   const rec={id,...p.value,contract:{...c.value,provenance:'user_confirmed'},provenance:'user_confirmed',updatedAt:now};
   const i=db.profiles.findIndex(v=>v.id===id); if(i>=0)db.profiles[i]=rec;else db.profiles.push(rec);
   storage.setItem(KEY,JSON.stringify(db)); return {ok:true,value:rec};},
- remove(id){const db=this.load();db.profiles=db.profiles.filter(v=>v.id!==id);storage.setItem(KEY,JSON.stringify(db));}
+ remove(id){const loaded=this.load();if(!loaded.ok)return loaded;const db=loaded.value;db.profiles=db.profiles.filter(v=>v.id!==id);storage.setItem(KEY,JSON.stringify(db));return {ok:true};}
 };}
 const api={SCHEMA_VERSION,KEY,validateProfile,validateContract,parse,repo};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;global.LohnCore=api;
