@@ -15,6 +15,10 @@ const badRaw='{broken';mem.v=badRaw;const blockedBad=repo.remove('x');assert(!bl
 const ui=fs.readFileSync(require('path').join(__dirname,'../www/index.html'),'utf8');
 for(const id of ['name','employer','employmentType','weeklyHours','annualLeaveDays','grossHourlyRate'])assert(ui.includes('id="'+id+'"'));
 assert(ui.includes('Vom Nutzer bestätigt'));assert(ui.includes('aria-live="polite"'));assert(ui.includes('local-core.js'));
+assert(ui.includes('fa-IR-u-ca-gregory'),'Persian UI must explicitly keep Gregorian calendar');
+for(const required of ['homePanel','calendarPanel','weekDays','prevWeek','nextWeek','goToday'])assert(ui.includes(required),'missing approved UI behavior '+required);
+assert(ui.includes("touchstart")&&ui.includes("touchend"),'weekly calendar swipe regression');
+assert(ui.includes('تقویم')&&ui.includes('خانه'),'core navigation regression');
 assert(!/value=["'](?:28|30|40)["']/.test(ui),'contract facts must not have hidden numeric defaults');
 assert(!/fetch\s*\(|XMLHttpRequest|WebSocket/.test(ui),'Gate B core UI must not depend on network');
 console.log('local-core tests PASS');
