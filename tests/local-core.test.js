@@ -1,4 +1,4 @@
-const assert=require('assert');const c=require('../www/local-core.js');
+const assert=require('assert'),fs=require('fs');const c=require('../www/local-core.js');
 let r=c.validateProfile({name:'Hauptjob',employer:'ESE',employmentType:'full_time'});assert(r.ok);
 assert(!c.validateProfile({name:'',employer:'',employmentType:'x'}).ok);
 assert(!c.validateContract({weeklyHours:'',annualLeaveDays:''}).ok);
@@ -12,4 +12,9 @@ const repo=c.repo(mem);let s=repo.saveProfile({name:'Job',employer:'Firma',emplo
 assert(s.ok);assert.equal(repo.load().value.profiles[0].contract.weeklyHours,20);assert.equal(repo.load().value.profiles[0].provenance,'user_confirmed');
 const future=JSON.stringify({schemaVersion:2,profiles:[{id:'future'}]});mem.v=future;const blocked=repo.saveProfile({name:'X',employer:'Y',employmentType:'other'},{weeklyHours:1,annualLeaveDays:1});assert(!blocked.ok);assert.equal(blocked.error.code,'UNSUPPORTED_SCHEMA');assert.equal(mem.v,future);
 const badRaw='{broken';mem.v=badRaw;const blockedBad=repo.remove('x');assert(!blockedBad.ok);assert.equal(blockedBad.error.code,'INVALID_JSON');assert.equal(mem.v,badRaw);
+const ui=fs.readFileSync(require('path').join(__dirname,'../www/index.html'),'utf8');
+for(const id of ['name','employer','employmentType','weeklyHours','annualLeaveDays','grossHourlyRate'])assert(ui.includes('id="'+id+'"'));
+assert(ui.includes('Vom Nutzer bestätigt'));assert(ui.includes('aria-live="polite"'));assert(ui.includes('local-core.js'));
+assert(!/value=["'](?:28|30|40)["']/.test(ui),'contract facts must not have hidden numeric defaults');
+assert(!/fetch\s*\(|XMLHttpRequest|WebSocket/.test(ui),'Gate B core UI must not depend on network');
 console.log('local-core tests PASS');
