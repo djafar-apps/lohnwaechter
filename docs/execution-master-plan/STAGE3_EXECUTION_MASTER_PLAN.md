@@ -15,8 +15,17 @@ Core works with AI off. Local-first. No raw sensitive documents/AU/medical data 
 ### Gate A — Sprint Zero factory
 Owner: Builder; approval: Reviewer + QA + Security.
 Dependencies: GitHub write, lockfile, deterministic CI.
-Acceptance evidence: fresh checkout; npm ci; Android build; APK SHA256; build metadata; dependency audit; secret scan; SBOM; rollback record.
+Acceptance evidence: fresh checkout; npm ci; Android build; APK SHA256; build metadata; dependency audit; secret scan; SBOM; rollback record. Supply-chain hardening before production release also requires GitHub Actions pinned to verified full-length commit SHAs and build provenance/artifact attestation where supported.
 Stop rule: no feature work if factory is red.
+
+### Stage 5 architecture baseline (validated 2026-09-19)
+Before Gate B feature implementation, use a testable separation of concerns: UI/Presentation -> Domain/Business Rules -> Data/Repository -> Local Storage. Business rules and payroll/calendar calculations must not live in UI code. This follows Android official guidance on testable layered architecture.
+
+For every Stage 5 implementation unit, evidence must cover as applicable: unit/local tests, integration tests, instrumented/UI tests, regression tests, security/privacy checks, performance/compatibility checks, accessibility checks, and lifecycle/state-restoration behavior. Device/emulator verification begins during Stage 5; Stage 6 remains real-user Closed Beta, not the first device test.
+
+Security verification baseline: NIST SSDF practices integrated through the SDLC plus OWASP MASVS/MASTG controls appropriate to the feature, including STORAGE, CRYPTO, AUTH, NETWORK, PLATFORM, CODE, RESILIENCE and PRIVACY. Threat/risk assumptions and exceptions must be recorded rather than silently accepted.
+
+Research governance: material findings from external research are not adopted directly. They must be checked against authoritative/current sources, compared with existing project decisions for conflict, assigned confirmed/conflicting/superseded/open status, and only then written into the relevant canonical project file with source/date/rationale. Original evidence is retained.
 
 ### Gate B — Work Profiles + Contract Facts
 Acceptance: no unexplained hardcoded leave/hours/job assumptions; user-confirmed facts are labeled; migration tested; local persistence tested.
@@ -43,7 +52,7 @@ Measure: crash/bug rate, calendar regressions, reconciliation correctness, backu
 No production expansion while a critical gate is red.
 
 ## Engineering loop
-Every implementation unit: Builder -> Reviewer -> QA -> Security -> Release acceptance.
+Every implementation unit: Design -> Builder -> unit/integration testing -> Reviewer -> QA/UI-regression testing -> Security/Privacy verification -> Release acceptance.
 Builder cannot self-approve. Evidence is attached to the change. Red checks block merge.
 
 ## Version/control policy
