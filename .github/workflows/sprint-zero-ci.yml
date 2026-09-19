@@ -40,8 +40,9 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: ./gradlew --no-daemon assembleDebug
-      - name: Hash artifact
-        run: sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee APK_SHA256.txt
+      - name: Hash artifact and lockfile
+        run: |
+          sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee APK_SHA256.txt
           sha256sum package-lock.json | tee PACKAGE_LOCK_SHA256.txt
       - name: Build metadata
         run: |
