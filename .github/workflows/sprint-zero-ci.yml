@@ -32,7 +32,10 @@ jobs:
       - name: Local Core tests
         run: npm test
       - name: Dependency audit
-        run: npm audit --audit-level=high
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          git diff --exit-code -- package-lock.json
+          npm audit --audit-level=high
       - name: Secret scan
         run: |
           ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .
