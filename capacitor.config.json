@@ -2,5 +2,9 @@
   "appId": "de.lohnwaechter.test",
   "appName": "Lohnwächter",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://lohnwaechter-alpha.floot.app",
+    "cleartext": false
+  }
 }
