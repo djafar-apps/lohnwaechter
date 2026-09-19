@@ -114,3 +114,35 @@ These are binding recovered decisions and must be checked before UI/product impl
 
 ### Preservation rule
 Controlled rebuild preserves approved product behavior and UX knowledge. A technically clean replacement is not acceptable if it silently drops recovered/approved capabilities. Before implementation, relevant recovered decisions must be converted into acceptance/regression criteria.
+
+
+### Lohn / Lohnabrechnung, Documents and specialist AI — recovered binding scope
+The product name Lohnwächter requires a visible wage/payroll workflow, not only a calendar.
+
+#### Document workspace
+- Dedicated Documents/Documentation area with explicit categories for employment/payroll evidence.
+- Accept document images/photos and PDF input.
+- Show the captured/imported document and its classification; preserve provenance and history.
+- OCR/keyword/rule processing is local/deterministic first. Relevant examples include Lohn/Lohnabrechnung, contract/employment facts and work-time evidence.
+- Extracted facts are proposals until the user reviews/confirms them. Contradictions remain visible and correctable.
+- Historical contracts/rules must be interpreted with effective dates; newer payslips can represent the current operational state but are not automatically treated as infallible truth.
+
+#### Payroll reconciliation
+- Dedicated Lohn/Lohnabrechnung section.
+- Core chain: Contract + Dienstplan + Actual Work + Payslip -> deterministic calculation/reconciliation -> clear possible discrepancies -> evidence/history.
+- Multiple months and revisions must remain traceable; payroll revisions/corrections are part of the recovered product scope.
+- Deterministic arithmetic and rule evaluation must not be delegated to generative AI.
+
+#### Task AI Assistant
+- Dedicated specialist Task AI Assistant exists inside the product.
+- It is scoped to wage/work/document tasks, not a general-purpose chatbot.
+- It can help explain extracted facts, ambiguous small excerpts, deterministic reconciliation traces, and prepare neutral task-specific summaries/reports.
+- AI is backend-controlled/quota-limited where cloud AI is used; deeper analysis can be plan/quota gated.
+- Local-first sensitive data policy remains binding: raw sensitive documents are not sent to cloud AI by default; explicit user choice plus minimization/redaction is required.
+- Core product remains usable with AI off.
+
+#### Recovered historical feature evidence
+Recovered Hatchable history included Documents, Analyze, Confirm, Scan, Assistant, Cases, AI Settings, Payroll Reconcile and Payroll Revisions. These are product-knowledge evidence and must be classified preserve/adapt/reject against the current local-first risk-minimized contract; they must not disappear silently during controlled rebuild.
+
+#### Product completeness stop rule
+No build may be presented as representative of Lohnwächter while the visible product shell omits the dedicated Payroll, Documents/Documentation and Task AI Assistant areas. Features that are not yet implemented must be represented honestly as gated/in-development rather than silently removed.
