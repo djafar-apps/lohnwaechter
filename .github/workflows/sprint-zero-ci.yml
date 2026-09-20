@@ -31,6 +31,8 @@ jobs:
         run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
       - name: Local Core tests
         run: node tests/local-core.test.js
+      - name: Ten-screen UI contract tests
+        run: node tests/ui-contract.test.js
       - name: Lockfile integrity
         run: |
           npm install --package-lock-only --ignore-scripts
