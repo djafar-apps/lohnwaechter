@@ -25,10 +25,11 @@ assert(ui.includes('تقویم')&&ui.includes('خانه'),'core navigation regre
 assert(!/value=["'](?:28|30|40)["']/.test(ui),'contract facts must not have hidden numeric defaults');
 assert(!/fetch\s*\(|XMLHttpRequest|WebSocket/.test(ui),'Gate B core UI must not depend on network');
 
-const cfg={enabled:['night','late','early'],order:['night','late','early'],startDate:'2026-09-01'};assert(c.normalizeShiftConfig(cfg).ok);assert.equal(c.plannedShift(cfg,'2026-09-01'),'night');assert.equal(c.plannedShift(cfg,'2026-09-02'),'late');assert.equal(c.plannedShift(cfg,'2026-09-03'),'early');assert.equal(c.plannedShift(cfg,'2026-09-04'),'night');
+const cfg={enabled:['night','late','early'],order:['night','late','early'],startDate:'2026-09-01'};assert(c.normalizeShiftConfig(cfg).ok);assert.equal(c.plannedShift(cfg,'2026-09-01'),'night');assert.equal(c.plannedShift(cfg,'2026-09-07'),'night');assert.equal(c.plannedShift(cfg,'2026-09-08'),'late');assert.equal(c.plannedShift(cfg,'2026-09-15'),'early');assert.equal(c.plannedShift(cfg,'2026-09-22'),'night');
 const one={enabled:['early'],order:['early'],startDate:'2026-09-01'};assert.equal(c.plannedShift(one,'2026-12-01'),'early');
-const two={enabled:['early','late'],order:['late','early'],startDate:'2026-09-01'};assert.equal(c.plannedShift(two,'2026-09-02'),'early');
-const four={enabled:['night','late','early','fourth'],order:['night','late','early','fourth'],startDate:'2026-09-01'};assert.equal(c.plannedShift(four,'2026-09-04'),'fourth');
+const two={enabled:['early','late'],order:['late','early'],startDate:'2026-09-01'};assert.equal(c.plannedShift(two,'2026-09-07'),'late');assert.equal(c.plannedShift(two,'2026-09-08'),'early');
+const four={enabled:['night','late','early','fourth'],order:['night','late','early','fourth'],startDate:'2026-09-01'};assert.equal(c.plannedShift(four,'2026-09-22'),'fourth');
+const custom={enabled:['night','late'],order:['night','late'],startDate:'2026-09-01',daysPerShift:{night:2,late:3}};assert.equal(c.plannedShift(custom,'2026-09-02'),'night');assert.equal(c.plannedShift(custom,'2026-09-03'),'late');assert.equal(c.plannedShift(custom,'2026-09-06'),'night');
 assert.equal(c.plannedShift({enabled:[],order:[],startDate:'2026-09-01'},'2026-09-02'),null);
 let day=c.mergeCalendarDay({}, {plannedShift:'night',holiday:true});day=c.applyConfirmedActual(day,'sick').value;assert.equal(day.holiday,true);assert.equal(day.plannedShift,'night');assert.equal(day.actualStatus,'sick');assert.equal(day.actualProvenance,'user_confirmed');
 const cal={'2026-09-01':c.applyConfirmedActual({plannedShift:'night',holiday:true},'sick').value,'2026-09-02':c.applyConfirmedActual({plannedShift:'late'},'work').value,'2026-09-03':c.applyConfirmedActual({plannedShift:'early'},'leave').value,'2026-09-04':c.applyConfirmedActual({plannedShift:'early'},'free').value};assert.equal(c.deterministicHours(cal),24);
