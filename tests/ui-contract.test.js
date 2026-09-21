@@ -10,3 +10,5 @@ assert(h.includes("Cloud-AI ist in diesem Local-first Build absichtlich nicht ve
 assert(!/sk-[A-Za-z0-9_-]{20,}/.test(h),'secret-like key in UI');
 console.log('ui-contract tests PASS');
 assert(h.includes('LohnCore.parseCalendarCommand'),'AI command UI must use deterministic parser');assert(h.includes("db.commandHistory.push"),'confirmed AI command must be traceable');
+
+assert(!h.includes("(work*8)+'h'"),'reports must not hardcode 8 hours per workday');assert(h.includes('calendarHours=confirmedHours(month)'),'payroll must derive expected hours from confirmed calendar');assert(h.includes("confirm('Änderung für "),'manual calendar mutation must require confirmation');assert(h.includes("week('Nacht','nightDays'),...week('Spät','lateDays'),...week('Früh','morningDays')"),'three-shift preset must follow owner-approved Nacht-Spät-Früh order');
