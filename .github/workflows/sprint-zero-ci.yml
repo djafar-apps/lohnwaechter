@@ -35,6 +35,8 @@ jobs:
         run: node tests/ui-contract.test.js
       - name: One-year synthetic User A acceptance fixture
         run: node tests/acceptance-user-a.test.js
+      - name: Stage 5 interaction and safety acceptance
+        run: node tests/stage5-interaction-safety.test.js
       - name: Lockfile integrity
         run: |
           npm install --package-lock-only --ignore-scripts
