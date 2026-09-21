@@ -33,6 +33,8 @@ jobs:
         run: node tests/local-core.test.js
       - name: Ten-screen UI contract tests
         run: node tests/ui-contract.test.js
+      - name: One-year synthetic User A acceptance fixture
+        run: node tests/acceptance-user-a.test.js
       - name: Lockfile integrity
         run: |
           npm install --package-lock-only --ignore-scripts
