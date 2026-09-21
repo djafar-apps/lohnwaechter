@@ -33,4 +33,9 @@ const custom={enabled:['night','late'],order:['night','late'],startDate:'2026-09
 assert.equal(c.plannedShift({enabled:[],order:[],startDate:'2026-09-01'},'2026-09-02'),null);
 let day=c.mergeCalendarDay({}, {plannedShift:'night',holiday:true});day=c.applyConfirmedActual(day,'sick').value;assert.equal(day.holiday,true);assert.equal(day.plannedShift,'night');assert.equal(day.actualStatus,'sick');assert.equal(day.actualProvenance,'user_confirmed');
 const cal={'2026-09-01':c.applyConfirmedActual({plannedShift:'night',holiday:true},'sick').value,'2026-09-02':c.applyConfirmedActual({plannedShift:'late'},'work').value,'2026-09-03':c.applyConfirmedActual({plannedShift:'early'},'leave').value,'2026-09-04':c.applyConfirmedActual({plannedShift:'early'},'free').value};assert.equal(c.deterministicHours(cal),24);
+let cmd=c.parseCalendarCommand('فردا بیمار هستم','2026-09-21');assert(cmd.ok);assert.equal(cmd.value.date,'2026-09-22');assert.equal(cmd.value.actual,'Krank');
+cmd=c.parseCalendarCommand('Am 23.09.2026 Nachtschicht','2026-09-21');assert(cmd.ok);assert.equal(cmd.value.date,'2026-09-23');assert.equal(cmd.value.plan,'Nacht');
+cmd=c.parseCalendarCommand('امروز مرخصی','2026-09-21');assert(cmd.ok);assert.equal(cmd.value.actual,'Urlaub');
+assert(!c.parseCalendarCommand('Nachtschicht','2026-09-21').ok,'ambiguous command without date must abstain');
+assert(!c.parseCalendarCommand('2026-09-23 etwas','2026-09-21').ok,'unknown action must abstain');
 console.log('local-core tests PASS');
