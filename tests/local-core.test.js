@@ -38,4 +38,5 @@ cmd=c.parseCalendarCommand('Am 23.09.2026 Nachtschicht','2026-09-21');assert(cmd
 cmd=c.parseCalendarCommand('امروز مرخصی','2026-09-21');assert(cmd.ok);assert.equal(cmd.value.actual,'Urlaub');
 assert(!c.parseCalendarCommand('Nachtschicht','2026-09-21').ok,'ambiguous command without date must abstain');
 assert(!c.parseCalendarCommand('2026-09-23 etwas','2026-09-21').ok,'unknown action must abstain');
+assert.equal(c.shiftDuration('08:00','14:00'),6,'six-hour shift must be supported');assert.equal(c.shiftDuration('22:00','06:00'),8,'overnight shift must cross midnight');assert.equal(c.shiftDuration('09:15','13:45'),4.5,'fractional duration must work');assert.equal(c.shiftDuration('bad','14:00'),null,'invalid time must be rejected');
 console.log('local-core tests PASS');
