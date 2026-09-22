@@ -9,15 +9,13 @@ on:
       - 'feature/**'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   factory:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: feature/local-core-foundation
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -27,8 +25,8 @@ jobs:
           java-version: '21'
       - name: Require committed lockfile
         run: test -s package-lock.json && node -e "JSON.parse(require('fs').readFileSync('package-lock.json','utf8'))"
-      - name: Bootstrap dependency lock for ML Kit
-        run: npm install --ignore-scripts
+      - name: Deterministic install
+        run: npm ci
       - name: Verify exact Capacitor and ML Kit versions
         run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2 @capacitor-mlkit/document-scanner@8.2.1 @capacitor-mlkit/text-recognition@8.2.1
       - name: Local Core tests
@@ -39,13 +37,10 @@ jobs:
         run: node tests/acceptance-user-a.test.js
       - name: Stage 5 interaction and safety acceptance
         run: node tests/stage5-interaction-safety.test.js
-      - name: Persist generated ML Kit lockfile
+      - name: Lockfile integrity
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git diff --cached --quiet || git commit -m "Lock ML Kit Android dependencies"
-          git push origin HEAD:feature/local-core-foundation
+          npm install --package-lock-only --ignore-scripts
+          git diff --exit-code -- package-lock.json
       - name: Dependency security audit (npm Bulk Advisory)
         run: node scripts/npm-bulk-audit.js package-lock.json high
       - name: Secret scan
