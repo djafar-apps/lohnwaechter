@@ -9,7 +9,7 @@ on:
       - 'feature/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   factory:
@@ -37,6 +37,13 @@ jobs:
         run: node tests/acceptance-user-a.test.js
       - name: Stage 5 interaction and safety acceptance
         run: node tests/stage5-interaction-safety.test.js
+      - name: Persist generated ML Kit lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git diff --cached --quiet || git commit -m "Lock ML Kit Android dependencies"
+          git push origin HEAD:feature/local-core-foundation
       - name: Dependency security audit (npm Bulk Advisory)
         run: node scripts/npm-bulk-audit.js package-lock.json high
       - name: Secret scan
