@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'sprint-zero/**'
+      - 'feature/**'
 
 permissions:
   contents: read
@@ -26,10 +27,22 @@ jobs:
         run: test -s package-lock.json && node -e "JSON.parse(require('fs').readFileSync('package-lock.json','utf8'))"
       - name: Deterministic install
         run: npm ci
-      - name: Verify exact Capacitor versions
-        run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2
-      - name: Dependency audit
-        run: npm audit --audit-level=high
+      - name: Verify exact Capacitor and ML Kit versions
+        run: npm ls @capacitor/core@8.5.2 @capacitor/android@8.5.2 @capacitor/cli@8.5.2 @capacitor-mlkit/document-scanner@8.2.1 @capacitor-mlkit/text-recognition@8.2.1
+      - name: Local Core tests
+        run: node tests/local-core.test.js
+      - name: Ten-screen UI contract tests
+        run: node tests/ui-contract.test.js
+      - name: One-year synthetic User A acceptance fixture
+        run: node tests/acceptance-user-a.test.js
+      - name: Stage 5 interaction and safety acceptance
+        run: node tests/stage5-interaction-safety.test.js
+      - name: Lockfile integrity
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          git diff --exit-code -- package-lock.json
+      - name: Dependency security audit (npm Bulk Advisory)
+        run: node scripts/npm-bulk-audit.js package-lock.json high
       - name: Secret scan
         run: |
           ! grep -RIE --exclude-dir=.git --exclude=package-lock.json '(sk-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9_]{20,}|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----)' .

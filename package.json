@@ -1,1 +1,18 @@
-{"name":"lohnwaechter-test","version":"0.2.0","private":true,"scripts":{"android:add":"cap add android","android:sync":"cap sync android"},"dependencies":{"@capacitor/android":"8.5.2","@capacitor/core":"8.5.2"},"devDependencies":{"@capacitor/cli":"8.5.2"}}
+{
+  "name": "lohnwaechter-test",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "android:add": "cap add android",
+    "android:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/core": "8.5.2",
+    "@capacitor-mlkit/document-scanner": "8.2.1",
+    "@capacitor-mlkit/text-recognition": "8.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2"
+  }
+}

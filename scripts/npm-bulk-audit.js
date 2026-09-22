@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+const fs=require('fs'),https=require('https'),levels={info:0,low:1,moderate:2,high:3,critical:4};
+const lock=JSON.parse(fs.readFileSync(process.argv[2]||'package-lock.json','utf8')),threshold=(process.argv[3]||'high').toLowerCase(),payload={};
+for(const [path,m] of Object.entries(lock.packages||{})){if(!path||!m?.version)continue;const marker='node_modules/',i=path.lastIndexOf(marker);if(i<0)continue;const name=path.slice(i+marker.length);if(name)(payload[name]??=[]).push(String(m.version));}
+for(const n of Object.keys(payload))payload[n]=[...new Set(payload[n])];
+const body=JSON.stringify(payload);
+function requestAudit(attempt=1){
+const req=https.request({hostname:'registry.npmjs.org',path:'/-/npm/v1/security/advisories/bulk',method:'POST',headers:{'content-type':'application/json','accept':'application/json','content-length':Buffer.byteLength(body)}},res=>{let d='';res.setEncoding('utf8');res.on('data',c=>d+=c);res.on('end',()=>{if(res.statusCode!==200){if(attempt<4 && [429,500,502,503,504].includes(res.statusCode)){const wait=attempt*2000;console.error('Bulk advisory temporary failure:',res.statusCode,'retry',attempt,'in',wait,'ms');return setTimeout(()=>requestAudit(attempt+1),wait)}console.error('Bulk advisory endpoint failed:',res.statusCode,d.slice(0,500));process.exit(2)}let r;try{r=JSON.parse(d)}catch(e){console.error('Invalid audit response:',e.message);process.exit(2)}const f=[];for(const [name,aa] of Object.entries(r||{}))for(const a of aa||[])f.push({name,severity:String(a.severity||'info').toLowerCase(),title:a.title||'',url:a.url||'',vulnerable_versions:a.vulnerable_versions||''});console.log(JSON.stringify({auditedPackages:Object.keys(payload).length,findings:f},null,2));const b=f.filter(x=>(levels[x.severity]??0)>=levels[threshold]);if(b.length){console.error('Blocking dependency advisories:',b.length);process.exit(1)}console.log('dependency bulk audit PASS')})});
+req.on('error',e=>{if(attempt<4){const wait=attempt*2000;console.error('Audit transport error:',e.message,'retry',attempt,'in',wait,'ms');return setTimeout(()=>requestAudit(attempt+1),wait)}console.error('Audit transport error:',e.message);process.exit(2)});req.write(body);req.end();
+}
+requestAudit();

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - feature/local-core-foundation
 
 jobs:
   build:
@@ -31,15 +32,20 @@ jobs:
       - name: Create Android project
         run: npx cap add android
 
-      - name: Sync web app
+      - name: Sync web app and native plugins
         run: npx cap sync android
 
       - name: Build APK
         working-directory: android
         run: ./gradlew assembleDebug
 
+      - name: Hash APK
+        run: sha256sum android/app/build/outputs/apk/debug/app-debug.apk | tee APK_SHA256.txt
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Lohnwaechter-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Lohnwaechter-Android-MLKit-Test
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            APK_SHA256.txt
